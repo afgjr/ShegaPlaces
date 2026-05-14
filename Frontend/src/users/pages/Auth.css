@@ -1,0 +1,31 @@
+
+.authentication__header {
+  color: white;
+  text-align: center;
+}
+
+.authentication {
+  width: 90%;
+  max-width: 25rem;
+  margin: 7rem auto;
+  text-align: center;
+}
+
+.authentication form {
+  margin-bottom: 1rem;
+}
+
+.authentication span {
+  color:rgb(95, 95, 209) ;
+}
+.authentication span:hover{
+  cursor: pointer;
+  text-decoration: underline;
+  color:rgb(14, 14, 246) ;
+}
+.auth-message {
+  margin-top: 0.75rem;
+  color: #d32f2f;
+  font-size: 0.9rem;
+}
+
