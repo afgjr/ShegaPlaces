@@ -4,6 +4,7 @@ import Card from '../../share/components/UiComponents/Card'
 import Button from '../../share/components/FormElements/Button'
 import ErrorModal from '../../share/components/UiComponents/ErrorModal'
 import LoadingSpinner from '../../share/components/UiComponents/LoadingSpinner'
+import Map from '../../share/components/UiComponents/Map'
 import { AuthContext } from '../../share/Context/auth-context'
 import { useHttpClient } from '../../share/hooks/http-hook'
 
@@ -49,9 +50,7 @@ const PlaceItem = (props) => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <p style={{ textAlign: 'center', padding: '1rem' }}>
-            📍 {props.address}
-          </p>
+          <Map center={props.coordinates} zoom={16} />
         </div>
       </Modal>
       <Modal

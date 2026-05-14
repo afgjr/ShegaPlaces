@@ -49,11 +49,14 @@
 }
 
 .map-container{
-  height: 10rem;
+  height: 15rem;
   width: 100%;
 }
 @media (min-width: 768px) {
   .place-item__image {
     height: 20rem;
   } 
+  .map-container {
+    height: 25rem;
+  }
 }
