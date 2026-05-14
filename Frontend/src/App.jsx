@@ -1,127 +1,57 @@
-import {  Routes, Route,Navigate } from "react-router";
-import { useCallback, useState } from 'react'
-import MainNavigation from "./share/components/Navigation/MainNavigation";
-// import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from 'react-router'
+import { AuthContext } from './share/Context/auth-context'
+import { useAuth } from './share/hooks/auth-hook'
 
-import Newplace from "./places/pages/NewPlace";
-import UserPlaces from "./places/pages/UserPlaces";
-import User from "./users/pages/Users";
+import MainNavigation from './share/components/Navigation/MainNavigation'
+import Users from './users/pages/Users'
+import UserPlaces from './places/pages/UserPlaces'
+import NewPlace from './places/pages/NewPlace'
 import UpdatePlace from './places/pages/UpdatePlace'
-import Auth from "./users/pages/Auth";
-import { AuthContext } from "./share/Context/auth-context";
-// import myImage from './assets/images.jpeg'
-import './App.css'
-// import { Navigate } from "react-router";
+import Auth from './users/pages/Auth'
+import NotFound from './share/components/UiComponents/NotFound'
 
+import './App.css'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { token, login, logout, userId } = useAuth()
 
-  const login=useCallback(()=>{
-    setIsLoggedIn(true)
-  })
-  const logout=useCallback(()=>{
-    setIsLoggedIn(false)
-  })
-let routes
+  let routes
+  if (token) {
+    routes = (
+      <Routes>
+        <Route path="/" element={<Users />} />
+        <Route path="/:uid/places" element={<UserPlaces />} />
+        <Route path="/places/new" element={<NewPlace />} />
+        <Route path="/places/:pid" element={<UpdatePlace />} />
+        <Route path="/auth" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    )
+  } else {
+    routes = (
+      <Routes>
+        <Route path="/" element={<Users />} />
+        <Route path="/:uid/places" element={<UserPlaces />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="*" element={<Navigate to="/auth" />} />
+      </Routes>
+    )
+  }
 
-if (isLoggedIn){
-  routes=(
-    <Routes>
-      <Route path="/" element={<User />} />
-      <Route path="/:id/places" element={<UserPlaces/>}/>
-      <Route path="/places/new" element={<Newplace/>}/>
-      <Route path="/places/:id" element={<UpdatePlace/>}/>
-      <Route path="/auth" element={<Navigate to='/'/>}/>
-    </Routes>
-  )
-} else {
-  routes=(
-  <Routes>
-    <Route path="/auth" element={<Auth/>}/>
-    <Route path="/" element={<User />} />
-    <Route path="/:id/places" element={<UserPlaces/>}/>
-    <Route path="/logout" element={<Navigate to ='/auth'/>}/>
-  </Routes>
-  )
-}
   return (
-       <>
-       <AuthContext.Provider value={{isLoggedIn:isLoggedIn,login:login,logout:logout}}>
-          <MainNavigation/>
-          <main>
-            
-              {routes}
-          
-          </main>
-      </AuthContext.Provider>
-     </>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout
+      }}
+    >
+      <MainNavigation />
+      <main>{routes}</main>
+    </AuthContext.Provider>
   )
 }
 
 export default App
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // <div>
-    //     <a href="https://vite.dev" target="_blank">
-    //       <img src={viteLogo} className="logo" alt="Vite logo" />
-    //     </a>
-    //     <a href="https://react.dev" target="_blank">
-    //       <img src={reactLogo} className="logo react" alt="React logo" />
-    //     </a>
-    //   </div>
-    //   <h1>Vite + React</h1>
-    //   <div className="card">
-    //     <button onClick={() => setCount((count) => count + 1)}>
-    //       count is {count}
-    //     </button>
-    //     <p>
-    //       Edit <code>src/App.jsx</code> and save to test HMR
-    //     </p>
-    //   </div>
-    //   <p className="read-the-docs">
-    //     Click on the Vite and React logos to learn more
-    //   </p>

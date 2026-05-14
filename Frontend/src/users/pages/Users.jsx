@@ -1,50 +1,39 @@
-import React, {useEffect , useState} from "react";
+import React, { useEffect, useState } from 'react'
 
-import UserList from "../components/UserList";
-import ErrorModal from "../../share/components/UiComponents/ErrorModal";
-import LoadingSpinner from "../../share/components/UiComponents/ErrorModal";
+import UserList from '../components/UserList'
+import ErrorModal from '../../share/components/UiComponents/ErrorModal'
+import LoadingSpinner from '../../share/components/UiComponents/LoadingSpinner'
+import { useHttpClient } from '../../share/hooks/http-hook'
 
+const Users = () => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
+  const [loadedUsers, setLoadedUsers] = useState()
 
-import myImage from '../../assets/images.jpeg'
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const responseData = await sendRequest(
+          `${import.meta.env.VITE_API_URL}/users`
+        )
+        setLoadedUsers(responseData.users)
+      } catch (err) {
+        // error is handled by the hook
+      }
+    }
+    fetchUsers()
+  }, [sendRequest])
 
- const User =()=>{
-        const [isLoading , setIsLoading]=useState(false)
-        const [error , setError]=useState()
-        const [loadedUsers , setLoadedUsers]=useState()
-
-        useEffect (()=>{
-            const sendRequest=async()=>{
-                setIsLoading(true)
-                try {
-                    const response= await fetch('http://localhost:3000/api/users')
-                    const responseData= await response.json()
-
-                    if (!response.ok) {
-                        throw new Error(responseData.message || 'Failed to fetch users')
-                    }
-                      console.log(responseData.users)
-                    setLoadedUsers(responseData.users)
-                  
-
-                } catch (err) {
-                    setError(err.message || 'Something went wrong , please try again')
-                }
-                setIsLoading(false)
-            }
-            sendRequest()
-        } ,[])
-
-        const errorHandler=()=>{
-            setError(null)
-        }
-        
-    return <>
-        <ErrorModal error={error} onClear={errorHandler}/>
-        {isLoading && <div className="center"><LoadingSpinner/></div>}
-        {!isLoading && loadedUsers && <UserList items={loadedUsers}/>}
+  return (
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedUsers && <UserList items={loadedUsers} />}
     </>
- }
+  )
+}
 
- export default User
-
- //'/src/assets/images.jpeg'
+export default Users
