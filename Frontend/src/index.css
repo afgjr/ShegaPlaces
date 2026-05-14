@@ -5,12 +5,19 @@
 }
 
 html {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
+  color: #334155;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  color: #0f172a;
 }
 
 body {
   margin: 0;
-  background: #4d4d4d;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
 }
 
 .slide-in-left-enter {

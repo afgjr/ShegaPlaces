@@ -1,20 +1,30 @@
 .main-navigation__menu-btn {
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
   background: transparent;
   border: none;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  margin-right: 2rem;
+  justify-content: space-evenly;
+  margin-right: 1.5rem;
   cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s ease-in-out;
+}
+
+.main-navigation__menu-btn:hover,
+.main-navigation__menu-btn:active {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .main-navigation__menu-btn span {
   display: block;
-  width: 3rem;
-  height: 2.5px;
+  width: 100%;
+  height: 3px;
   background: white;
+  border-radius: 3px;
+  transition: transform 0.2s ease-in-out;
 }
 
 .main-navigation__title {

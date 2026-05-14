@@ -10,14 +10,15 @@
   width: 100%;
   height: 100%;
   text-decoration: none;
-  padding: 1rem;
-  color: white;
-  background: #292929;
+  padding: 1.5rem;
+  color: #1e293b;
+  background: transparent;
+  transition: background 0.2s ease-in-out;
 }
 
 .user-item a:hover,
 .user-item a:active {
-  background: #ffd900;
+  background: #f8fafc;
 }
 
 .user-item__content {
@@ -25,25 +26,33 @@
 }
 
 .user-item__image {
-  width: 4rem;
-  height: 4rem;
-  margin-right: 1rem;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-right: 1.5rem;
 }
 
 .user-item__info h2 {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem 0;
-  font-weight: normal;
-  color: #ffd900;
+  font-size: 1.4rem;
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  color: #0f172a;
+  transition: color 0.2s ease;
 }
 
 .user-item:hover h2,
-.user-item:active h2,
-.user-item:hover h3,
-.user-item:active h3 {
-  color: #292929;
+.user-item:active h2 {
+  color: #4f46e5;
 }
 
 .user-item__info h3 {
   margin: 0;
+  font-weight: 400;
+  font-size: 1rem;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.user-item:hover h3,
+.user-item:active h3 {
+  color: #475569;
 }

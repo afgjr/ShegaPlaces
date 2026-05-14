@@ -5,14 +5,15 @@
   left: 10%;
   width: 80%;
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .modal__header {
   width: 100%;
-  padding: 1rem 0.5rem;
-  background: #2a006e;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: white;
 }
 

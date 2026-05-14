@@ -16,26 +16,32 @@
 
 .nav-links a {
   border: 1px solid transparent;
-  color: #292929;
+  color: #1e293b;
   text-decoration: none;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .nav-links a:hover,
 .nav-links a:active,
 .nav-links a.active {
-  background: #f8df00;
-  border-color: #292929;
-  color: #292929;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  border-color: transparent;
 }
 
 .nav-links button {
   cursor: pointer;
-  border: 1px solid #292929;
-  color: #292929;
-  background: transparent;
-  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  padding: 0.5rem 1.5rem;
   font: inherit;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .nav-links button:focus {
@@ -44,8 +50,8 @@
 
 .nav-links button:hover,
 .nav-links button:active {
-  background: #292929;
-  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
 @media (min-width: 768px) {
@@ -61,16 +67,26 @@
     color: white;
     text-decoration: none;
   }
+  
+  .nav-links a:hover,
+  .nav-links a:active,
+  .nav-links a.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
 
   .nav-links button {
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     background: transparent;
+    box-shadow: none;
   }
   
   .nav-links button:hover,
   .nav-links button:active {
-    background: #f8df00;
-    color: #292929;
+    background: white;
+    color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
