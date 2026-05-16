@@ -16,15 +16,17 @@ const UserList = (props) => {
 
   return (
     <ul className="users-list">
-      {props.items.map((item) => (
-        <UserItem
-          key={item.id}
-          id={item.id}
-          image={item.image}
-          name={item.name}
-          placeCount={item.places.length}
-        />
-      ))}
+      {props.items
+        .filter(item => item.places.length > 0)
+        .map((item) => (
+          <UserItem
+            key={item.id}
+            id={item.id}
+            image={item.image}
+            name={item.name}
+            placeCount={item.places.length}
+          />
+        ))}
     </ul>
   )
 }

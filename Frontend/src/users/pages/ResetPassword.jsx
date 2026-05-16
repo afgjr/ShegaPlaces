@@ -6,7 +6,7 @@ import Button from '../../share/components/FormElements/Button'
 import Input from '../../share/components/FormElements/Input'
 import LoadingSpinner from '../../share/components/UiComponents/LoadingSpinner'
 import ErrorModal from '../../share/components/UiComponents/ErrorModal'
-import { VALIDATOR_MINLENGTH } from '../../share/util/validators'
+import { VALIDATOR_PASSWORD } from '../../share/util/validators'
 import { useForm } from '../../share/hooks/form-hooks'
 import { useHttpClient } from '../../share/hooks/http-hook'
 
@@ -62,10 +62,11 @@ const ResetPassword = () => {
               element="input"
               type="password"
               label="New Password"
-              placeholder="Enter new 6+ char password"
-              errorText="Please enter a valid password (at least 6 characters)."
-              validators={[VALIDATOR_MINLENGTH(6)]}
+              placeholder="8+ chars, 1 Uppercase, 1 Number, 1 Spec Char"
+              errorText="Password must be at least 8 char with 1 uppercase, 1 lowercase, 1 number, and 1 special character."
+              validators={[VALIDATOR_PASSWORD()]}
               onInput={inputHandler}
+              showCriteria={true}
             />
             <Button type="submit" disabled={!formState.isValid}>
               SET NEW PASSWORD

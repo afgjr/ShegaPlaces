@@ -39,3 +39,35 @@
   border-color: red;
   background: #ffd1d1;
 }
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  outline: none;
+}
+
+.password-criteria {
+  list-style: none;
+  margin: 0.5rem 0 0 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.password-criteria li {
+  margin-bottom: 0.2rem;
+  transition: all 0.3s ease;
+}
+
+.password-criteria .invalid {
+  color: #dc2626; /* Red for missing criteria */
+}

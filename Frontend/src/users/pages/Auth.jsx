@@ -7,7 +7,7 @@ import Input from '../../share/components/FormElements/Input'
 import ImageUpload from '../../share/components/FormElements/ImageUpload'
 import LoadingSpinner from '../../share/components/UiComponents/LoadingSpinner'
 import ErrorModal from '../../share/components/UiComponents/ErrorModal'
-import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../../share/util/validators'
+import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE, VALIDATOR_PASSWORD } from '../../share/util/validators'
 import { useForm } from '../../share/hooks/form-hooks'
 import { useHttpClient } from '../../share/hooks/http-hook'
 import { AuthContext } from '../../share/Context/auth-context'
@@ -136,10 +136,11 @@ const Auth = () => {
             element="input"
             type="password"
             label="Password"
-            placeholder="Enter min 6 character password"
-            errorText="Please enter a valid password (at least 6 characters)."
-            validators={[VALIDATOR_MINLENGTH(6)]}
+            placeholder={"Enter password"}
+            errorText={isSignup ? "Password must be at least 8 chars with 1 uppercase, 1 lowercase, 1 number, and 1 special character." : "Please enter a valid password."}
+            validators={isSignup ? [VALIDATOR_PASSWORD()] : [VALIDATOR_MINLENGTH(6)]}
             onInput={inputHandler}
+            showCriteria={isSignup}
           />
           <Button type="submit" disabled={!formState.isValid}>
             {isSignup ? 'SIGN UP' : 'LOG IN'}
@@ -154,7 +155,7 @@ const Auth = () => {
         {!isSignup && (
           <div style={{ marginTop: '1rem', textAlign: 'center' }}>
             <Link to="/forgot-password" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>
-               Forgot Password?
+              Forgot Password?
             </Link>
           </div>
         )}
