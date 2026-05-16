@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, Link } from 'react-router'
 
 import Card from '../../share/components/UiComponents/Card'
 import Button from '../../share/components/FormElements/Button'
@@ -145,12 +145,19 @@ const Auth = () => {
             {isSignup ? 'SIGN UP' : 'LOG IN'}
           </Button>
         </form>
-        <p>
+        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
           {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <span onClick={switchModeHandler}>
+          <span onClick={switchModeHandler} style={{ cursor: 'pointer', color: '#4f46e5', fontWeight: '500' }}>
             {isSignup ? 'Log In' : 'Sign Up'}
           </span>
         </p>
+        {!isSignup && (
+          <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+            <Link to="/forgot-password" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>
+               Forgot Password?
+            </Link>
+          </div>
+        )}
       </Card>
     </>
   )

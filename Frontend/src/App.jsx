@@ -8,6 +8,8 @@ import UserPlaces from './places/pages/UserPlaces'
 import NewPlace from './places/pages/NewPlace'
 import UpdatePlace from './places/pages/UpdatePlace'
 import Auth from './users/pages/Auth'
+import ForgotPassword from './users/pages/ForgotPassword'
+import ResetPassword from './users/pages/ResetPassword'
 import NotFound from './share/components/UiComponents/NotFound'
 
 import './App.css'
@@ -24,6 +26,8 @@ function App() {
         <Route path="/places/new" element={<NewPlace />} />
         <Route path="/places/:pid" element={<UpdatePlace />} />
         <Route path="/auth" element={<Navigate to="/" />} />
+        <Route path="/forgot-password" element={<Navigate to="/" />} />
+        <Route path="/reset-password/:token" element={<Navigate to="/" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     )
@@ -33,6 +37,8 @@ function App() {
         <Route path="/" element={<Users />} />
         <Route path="/:uid/places" element={<UserPlaces />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     )
