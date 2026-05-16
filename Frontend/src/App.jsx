@@ -2,15 +2,20 @@ import { Routes, Route, Navigate } from 'react-router'
 import { AuthContext } from './share/Context/auth-context'
 import { useAuth } from './share/hooks/auth-hook'
 
+import React, { Suspense } from 'react'
+
 import MainNavigation from './share/components/Navigation/MainNavigation'
-import Users from './users/pages/Users'
-import UserPlaces from './places/pages/UserPlaces'
-import NewPlace from './places/pages/NewPlace'
-import UpdatePlace from './places/pages/UpdatePlace'
-import Auth from './users/pages/Auth'
-import ForgotPassword from './users/pages/ForgotPassword'
-import ResetPassword from './users/pages/ResetPassword'
-import NotFound from './share/components/UiComponents/NotFound'
+import LoadingSpinner from './share/components/UiComponents/LoadingSpinner'
+
+// Lazy-loaded pages (Code Splitting)
+const Users = React.lazy(() => import('./users/pages/Users'))
+const UserPlaces = React.lazy(() => import('./places/pages/UserPlaces'))
+const NewPlace = React.lazy(() => import('./places/pages/NewPlace'))
+const UpdatePlace = React.lazy(() => import('./places/pages/UpdatePlace'))
+const Auth = React.lazy(() => import('./users/pages/Auth'))
+const ForgotPassword = React.lazy(() => import('./users/pages/ForgotPassword'))
+const ResetPassword = React.lazy(() => import('./users/pages/ResetPassword'))
+const NotFound = React.lazy(() => import('./share/components/UiComponents/NotFound'))
 
 import './App.css'
 
@@ -55,7 +60,11 @@ function App() {
       }}
     >
       <MainNavigation />
-      <main>{routes}</main>
+      <main>
+        <Suspense fallback={<div className="center"><LoadingSpinner /></div>}>
+          {routes}
+        </Suspense>
+      </main>
     </AuthContext.Provider>
   )
 }

@@ -73,7 +73,7 @@ const PlaceItem = (props) => {
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
             <img
-              src={`${import.meta.env.VITE_ASSET_URL}/${props.image}`}
+              src={props.image.startsWith('http') ? props.image : `${import.meta.env.VITE_ASSET_URL}/${props.image}`}
               alt={props.title}
             />
           </div>
