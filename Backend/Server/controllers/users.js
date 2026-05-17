@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
+import dns from 'dns'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
@@ -134,7 +135,13 @@ const transporter = nodemailer.createTransport({
   },
   connectionTimeout: 15000,
   greetingTimeout: 15000,
-  socketTimeout: 20000
+  socketTimeout: 20000,
+  tls: {
+    servername: 'smtp.gmail.com'
+  },
+  lookup: (hostname, options, callback) => {
+    return dns.lookup(hostname, { family: 4 }, callback)
+  }
 });
 
 export const forgotPassword = async (req, res, next) => {
