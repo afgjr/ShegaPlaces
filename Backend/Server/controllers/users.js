@@ -125,11 +125,16 @@ import nodemailer from 'nodemailer';
 // Configure your email service transporter here
 // You will need to add EMAIL_USER and EMAIL_APP_PASSWORD to your .env file
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_APP_PASSWORD
-  }
+  },
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 20000
 });
 
 export const forgotPassword = async (req, res, next) => {
@@ -173,11 +178,20 @@ export const forgotPassword = async (req, res, next) => {
   };
 
   try {
+    await transporter.verify();
+    console.log('SMTP transporter verified successfully.');
+
     // Attempt to send the email!
     await transporter.sendMail(mailOptions);
     console.log('Password reset email physically sent to:', user.email);
   } catch (err) {
-    console.error('Email send failure: ', err);
+    console.error('Email send failure:', {
+      message: err.message,
+      code: err.code,
+      command: err.command,
+      response: err.response,
+      responseCode: err.responseCode
+    });
     // If we fail to send email, clear the token from the user so they can try again
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
