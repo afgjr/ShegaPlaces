@@ -138,7 +138,7 @@ const Auth = () => {
             label="Password"
             placeholder={"Enter password"}
             errorText={isSignup ? "Password must be at least 8 chars with 1 uppercase, 1 lowercase, 1 number, and 1 special character." : "Please enter a valid password."}
-            validators={isSignup ? [VALIDATOR_PASSWORD()] : [VALIDATOR_MINLENGTH(6)]}
+            validators={isSignup ? [VALIDATOR_PASSWORD()] : [VALIDATOR_MINLENGTH(8)]}
             onInput={inputHandler}
             showCriteria={isSignup}
           />
