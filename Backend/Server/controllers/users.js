@@ -9,7 +9,17 @@ import { User } from '../models/user.js'
 
 // Resend uses HTTPS (port 443) instead of SMTP (port 465/587),
 // which works on cloud hosts like Render that block outbound SMTP.
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy-initialized to avoid crashing at startup when key is not set (e.g. local dev).
+let _resend
+const getResend = () => {
+  if (!_resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY environment variable is not set.')
+    }
+    _resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return _resend
+}
 
 export const getUsers = async (req, res, next) => {
   let users
@@ -152,7 +162,7 @@ export const forgotPassword = async (req, res, next) => {
   const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'ShegaPlaces Team <onboarding@resend.dev>',
       to: [user.email],
       subject: 'Password Reset Request',
