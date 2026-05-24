@@ -2,23 +2,24 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
 
-// Resend uses HTTPS (port 443) instead of SMTP (port 465/587),
-// which works on cloud hosts like Render that block outbound SMTP.
-// Lazy-initialized to avoid crashing at startup when key is not set (e.g. local dev).
-let _resend
-const getResend = () => {
-  if (!_resend) {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY environment variable is not set.')
-    }
-    _resend = new Resend(process.env.RESEND_API_KEY)
+// Using Nodemailer with a Gmail App Password
+// This allows you to send emails with a standard @gmail.com address for free, bypassing domain restrictions.
+const getTransporter = () => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    throw new Error('EMAIL_USER or EMAIL_APP_PASSWORD environment variables are not set.')
   }
-  return _resend
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD
+    }
+  })
 }
 
 export const getUsers = async (req, res, next) => {
@@ -162,9 +163,10 @@ export const forgotPassword = async (req, res, next) => {
   const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`
 
   try {
-    const { data, error } = await getResend().emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'ShegaPlaces Team <onboarding@resend.dev>',
-      to: [user.email],
+    const transporter = getTransporter()
+    const info = await transporter.sendMail({
+      from: `"ShegaPlaces Team" <${process.env.EMAIL_USER}>`,
+      to: user.email,
       subject: 'Password Reset Request',
       html: `
         <h2>Password Reset Request</h2>
@@ -175,11 +177,7 @@ export const forgotPassword = async (req, res, next) => {
       `
     })
 
-    if (error) {
-      throw new Error(error.message)
-    }
-
-    console.log('Password reset email sent to:', user.email, '| Resend ID:', data?.id)
+    console.log('Password reset email sent to:', user.email, '| Message ID:', info.messageId)
   } catch (err) {
     console.error('Email send failure:', err.message)
     // If we fail to send email, clear the token so user can try again
