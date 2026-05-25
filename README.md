@@ -1,10 +1,16 @@
+# Shega Places
+
+<p align="center">
+  ShegaPlaces is a beautifully crafted full-stack MERN application that brings people and locations together. Whether it's a hidden cafe, a breathtaking viewpoint, or your favorite local park, ShegaPlaces lets you upload, showcase, and map these spots securely.
+</p>
+
+
 <p align="center">
   <img src="./shegaplaces_logo.png" alt="ShegaPlaces Logo" width="120" />
 </p>
 
-🔗 Live demo → [Your Vercel URL here]
+🔗 Live demo → ([Shega Places](https://shega-places.vercel.app/)) 
 
-📚 Documentation → https://github.com/afgjr/ShegaPlaces
 
 ## Core features
 
@@ -33,7 +39,7 @@
 
 ### Option 1: Use Hosted Version
 
-Navigate to the live deployment (via Vercel and Render) and simply sign up for a free account.
+Navigate to the live deployment ([Shega Places](https://shega-places.vercel.app/)) and simply sign up for a free account.
 
 ### Option 2: Self-hosted Deployment
 
