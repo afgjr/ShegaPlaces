@@ -8,7 +8,7 @@ import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
 
 // Using Nodemailer with a Gmail App Password
-// This allows you to send emails with a standard @gmail.com address for free, bypassing domain restrictions.
+// This is the ONLY free way to send emails to arbitrary users in production without buying a custom domain.
 const getTransporter = () => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
     throw new Error('EMAIL_USER or EMAIL_APP_PASSWORD environment variables are not set.')
