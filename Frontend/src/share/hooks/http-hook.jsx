@@ -33,6 +33,7 @@ export const useHttpClient = () => {
       return responseData
     } catch (err) {
       if (err.name !== 'AbortError') {
+        console.error(`[HTTP Error] ${method} ${url}: ${err.message}`)
         setError(err.message || 'Something went wrong, please try again.')
         setIsLoading(false)
       }

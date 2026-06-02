@@ -25,16 +25,19 @@ const ForgotPassword = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault()
+    const email = formState.inputs.email.value
+    console.log(`[ForgotPassword] Sending reset request for email: ${email}`)
     try {
       const responseData = await sendRequest(
         `${import.meta.env.VITE_API_URL}/users/forgot-password`,
         'POST',
-        JSON.stringify({ email: formState.inputs.email.value }),
+        JSON.stringify({ email }),
         { 'Content-Type': 'application/json' }
       )
+      console.log(`[ForgotPassword] Success:`, responseData)
       setMessage(responseData.message)
     } catch (err) {
-      // handled by hook
+      console.error(`[ForgotPassword] Error:`, err.message)
     }
   }
 
