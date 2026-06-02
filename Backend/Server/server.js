@@ -54,6 +54,13 @@ app.use((req, res, next) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
+  console.error('========================================')
+  console.error(`[${new Date().toISOString()}] ERROR ${req.method} ${req.originalUrl}`)
+  console.error(`Status: ${err.code || 500}`)
+  console.error(`Message: ${err.message}`)
+  console.error(`Stack: ${err.stack}`)
+  console.error('========================================')
+
   if (res.headersSent) {
     return next(err)
   }

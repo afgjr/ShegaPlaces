@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import dns from 'dns'
+import nodemailer from 'nodemailer'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
@@ -121,10 +122,6 @@ export const login = async (req, res, next) => {
   })
 }
 
-import nodemailer from 'nodemailer';
-
-// Configure your email service transporter here
-// You will need to add EMAIL_USER and EMAIL_APP_PASSWORD to your .env file
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
@@ -147,30 +144,43 @@ const transporter = nodemailer.createTransport({
 export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
 
+  console.log(`[forgotPassword] Request received for email: ${email}`);
+
+  // Check email config early
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    console.error('[forgotPassword] MISSING EMAIL CONFIG - EMAIL_USER or EMAIL_APP_PASSWORD not set in .env');
+    return next(new HttpError('Server email configuration is incomplete.', 500));
+  }
+
   let user;
   try {
     user = await User.findOne({ email });
+    console.log(`[forgotPassword] User lookup: ${user ? 'found' : 'not found'} (${email})`);
   } catch (err) {
+    console.error(`[forgotPassword] DB error finding user ${email}:`, err.message, err.stack);
     return next(new HttpError('Something went wrong, please try again.', 500));
   }
 
   if (!user) {
+    console.warn(`[forgotPassword] No user found with email: ${email}`);
     return next(new HttpError('Could not find a user with that email.', 404));
   }
 
   const resetToken = crypto.randomBytes(32).toString('hex');
   user.resetToken = resetToken;
   user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
+  console.log(`[forgotPassword] Reset token generated for ${email}, expires in 1 hour`);
 
   try {
     await user.save();
+    console.log(`[forgotPassword] Reset token saved to DB for ${email}`);
   } catch (err) {
+    console.error(`[forgotPassword] Failed to save reset token for ${email}:`, err.message, err.stack);
     return next(new HttpError('Something went wrong, saving token failed.', 500));
   }
 
   const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
 
-  // Set up the actual email data
   const mailOptions = {
     from: `"ShegaPlaces Team" <${process.env.EMAIL_USER}>`,
     to: user.email,
@@ -184,39 +194,44 @@ export const forgotPassword = async (req, res, next) => {
     `
   };
 
-  try {
-    await transporter.verify();
-    console.log('SMTP transporter verified successfully.');
+  console.log(`[forgotPassword] Attempting to send email to ${user.email} via ${process.env.EMAIL_USER}`);
 
-    // Attempt to send the email!
-    await transporter.sendMail(mailOptions);
-    console.log('Password reset email physically sent to:', user.email);
+  try {
+    const verified = await transporter.verify();
+    console.log(`[forgotPassword] SMTP transporter verified: ${JSON.stringify(verified)}`);
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[forgotPassword] Email sent successfully to ${user.email}: messageId=${info.messageId}, response=${info.response}`);
   } catch (err) {
-    console.error('Email send failure:', {
-      message: err.message,
-      code: err.code,
-      command: err.command,
-      response: err.response,
-      responseCode: err.responseCode
-    });
-    // If we fail to send email, clear the token from the user so they can try again
+    console.error(`[forgotPassword] EMAIL SEND FAILED for ${user.email}:`);
+    console.error(`  message: ${err.message}`);
+    console.error(`  code: ${err.code}`);
+    console.error(`  command: ${err.command}`);
+    console.error(`  response: ${err.response}`);
+    console.error(`  responseCode: ${err.responseCode}`);
+    console.error(`  stack: ${err.stack}`);
+
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
+    console.log(`[forgotPassword] Reset token cleared for ${email} due to email failure`);
     return next(new HttpError('There was an error sending the email. Try again later.', 500));
   }
 
+  console.log(`[forgotPassword] Flow completed successfully for ${email}`);
   res.status(200).json({ message: 'A password reset link has been successfully dispatched to your email!' });
 }
 
 export const resetPassword = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.warn(`[resetPassword] Validation failed:`, errors.array());
     return next(new HttpError('Invalid password passed, check your data.', 422));
   }
 
   const { token } = req.params;
   const { newPassword } = req.body;
+  console.log(`[resetPassword] Request received with token: ${token ? token.substring(0, 8) + '...' : 'MISSING'}`);
 
   let user;
   try {
@@ -224,18 +239,25 @@ export const resetPassword = async (req, res, next) => {
       resetToken: token,
       resetTokenExpiration: { $gt: Date.now() }
     });
+    console.log(`[resetPassword] Token lookup: ${user ? 'valid token found' : 'no matching token'}`);
   } catch (err) {
+    console.error(`[resetPassword] DB error looking up token:`, err.message, err.stack);
     return next(new HttpError('Something went wrong, please try again.', 500));
   }
 
   if (!user) {
+    console.warn(`[resetPassword] Invalid or expired token used: ${token ? token.substring(0, 8) + '...' : 'MISSING'}`);
     return next(new HttpError('Token is invalid or has expired.', 403));
   }
+
+  console.log(`[resetPassword] Valid token found for user: ${user.email}, resetting password...`);
 
   let hashedPassword;
   try {
     hashedPassword = await bcrypt.hash(newPassword, 12);
+    console.log(`[resetPassword] New password hashed successfully`);
   } catch (err) {
+    console.error(`[resetPassword] Bcrypt hashing failed:`, err.message, err.stack);
     return next(new HttpError('Could not hash password.', 500));
   }
 
@@ -245,7 +267,9 @@ export const resetPassword = async (req, res, next) => {
 
   try {
     await user.save();
+    console.log(`[resetPassword] Password reset successfully for ${user.email}`);
   } catch (err) {
+    console.error(`[resetPassword] Failed to save new password for ${user.email}:`, err.message, err.stack);
     return next(new HttpError('Could not save new password.', 500));
   }
 
