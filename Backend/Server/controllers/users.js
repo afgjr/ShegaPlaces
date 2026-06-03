@@ -152,14 +152,7 @@ export const forgotPassword = async (req, res, next) => {
 
   console.log(`[forgotPassword] Request received for email: ${email}`)
 
-<<<<<<< HEAD
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-    console.error('[forgotPassword] MISSING EMAIL CONFIG - EMAIL_USER or EMAIL_APP_PASSWORD not set in .env')
-    return next(new HttpError('Server email configuration is incomplete.', 500))
-  }
 
-=======
->>>>>>> fix-email
   let user
   try {
     user = await User.findOne({ email })
@@ -189,43 +182,6 @@ export const forgotPassword = async (req, res, next) => {
 
   const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`
 
-<<<<<<< HEAD
-  const mailOptions = {
-    from: `"ShegaPlaces Team" <${process.env.EMAIL_USER}>`,
-    to: user.email,
-    subject: 'Password Reset Request',
-    html: `
-      <h2>Password Reset Request</h2>
-      <p>Hello ${user.name}, you recently requested to reset your password for your ShegaPlaces account.</p>
-      <p>Click the link below to securely set a new password. This link will safely expire in 1 hour.</p>
-      <a href="${resetLink}" style="display:inline-block; padding:10px 20px; color:white; background-color:#4f46e5; border-radius:5px; text-decoration:none;">Reset Password</a>
-      <p>If you did not request a password reset, please ignore this email.</p>
-    `
-  }
-
-  console.log(`[forgotPassword] Attempting to send email to ${user.email} via ${process.env.EMAIL_USER}`)
-
-  try {
-    const transporter = getTransporter()
-    const info = await transporter.sendMail(mailOptions)
-    console.log(`[forgotPassword] Email sent successfully to ${user.email}: messageId=${info.messageId}, response=${info.response}`)
-  } catch (err) {
-    console.error(`[forgotPassword] EMAIL SEND FAILED for ${user.email}:`)
-    console.error(`  message: ${err.message}`)
-    console.error(`  code: ${err.code}`)
-    console.error(`  command: ${err.command}`)
-    console.error(`  response: ${err.response}`)
-    console.error(`  responseCode: ${err.responseCode}`)
-    console.error(`  stack: ${err.stack}`)
-
-    user.resetToken = undefined
-    user.resetTokenExpiration = undefined
-    await user.save()
-    console.log(`[forgotPassword] Reset token cleared for ${email} due to email failure`)
-    return next(new HttpError('There was an error sending the email. Try again later.', 500))
-  }
-
-=======
   console.log(`[forgotPassword] Attempting to send email to ${user.email} via Brevo`)
 
   try {
@@ -252,8 +208,6 @@ export const forgotPassword = async (req, res, next) => {
     console.log(`[forgotPassword] Reset token cleared for ${email} due to email failure`)
     return next(new HttpError('There was an error sending the email. Try again later.', 500))
   }
-
->>>>>>> fix-email
   console.log(`[forgotPassword] Flow completed successfully for ${email}`)
   res.status(200).json({ message: 'A password reset link has been successfully dispatched to your email!' })
 }
@@ -310,8 +264,4 @@ export const resetPassword = async (req, res, next) => {
   }
 
   res.status(200).json({ message: 'Password has been safely reset!' })
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> fix-email
