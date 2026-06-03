@@ -8,16 +8,6 @@ import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
 
 const getTransporter = () => {
-<<<<<<< HEAD
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-    throw new Error('EMAIL_USER or EMAIL_APP_PASSWORD environment variables are not set.')
-  }
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_APP_PASSWORD
-=======
   if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
     throw new Error('BREVO_SMTP_USER or BREVO_SMTP_PASS environment variables are not set.')
   }
@@ -28,7 +18,6 @@ const getTransporter = () => {
     auth: {
       user: process.env.BREVO_SMTP_USER,
       pass: process.env.BREVO_SMTP_PASS
->>>>>>> fix-email
     }
   })
 }
