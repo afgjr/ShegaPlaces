@@ -49,8 +49,15 @@ const ForgotPassword = () => {
         <h2>Forgot Password</h2>
         <hr />
         {message ? (
-          <div>
-             <p style={{ color: '#16a34a', margin: '1rem 0' }}>{message}</p>
+          <div style={{ padding: '0.5rem 0' }}>
+             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+                <p style={{ color: '#16a34a', fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 0.5rem 0' }}>
+                  ✅ Reset email sent!
+                </p>
+                <p style={{ color: '#15803d', margin: '0', lineHeight: '1.5' }}>
+                  📧 If you don't see it, check your <strong>spam/junk folder</strong> and mark it as "Not Spam".
+                </p>
+             </div>
              <Link to="/auth">
                 <Button>BACK TO LOGIN</Button>
              </Link>
