@@ -1,12 +1,23 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 
-import { getUsers, signUp, login, forgotPassword, resetPassword } from '../controllers/users.js'
+import { getUsers, signUp, login, forgotPassword, resetPassword, googleAuthCallback } from '../controllers/users.js'
 import fileUpload from '../middleware/file-upload.js'
+import passport from 'passport'
 
 const router = Router()
 
 router.get('/', getUsers)
+
+// Initiate Google OAuth Flow
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }))
+
+// Google OAuth Callback URL
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  googleAuthCallback
+)
 
 router.post(
   '/signup',
