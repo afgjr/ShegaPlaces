@@ -152,6 +152,22 @@ const Auth = () => {
             {isSignup ? 'Log In' : 'Sign Up'}
           </span>
         </p>
+
+        <div className="auth-divider">or</div>
+
+        <a
+          href={`${import.meta.env.VITE_API_URL}/users/auth/google`}
+          className="google-btn"
+        >
+          {/* Official Google "G" logo SVG */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.14 0 5.95 1.08 8.18 2.84l6.08-6.08C34.46 3.1 29.5 1 24 1 14.82 1 7.07 6.48 3.85 14.18l7.08 5.5C12.6 13.16 17.85 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.15 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.46c-.54 2.88-2.16 5.32-4.6 6.96l7.08 5.5C42.88 37.3 46.15 31.4 46.15 24.5z"/>
+            <path fill="#FBBC05" d="M10.93 28.32A14.5 14.5 0 0 1 9.5 24c0-1.5.26-2.95.72-4.32l-7.08-5.5A23.94 23.94 0 0 0 0 24c0 3.86.92 7.51 2.55 10.72l8.38-6.4z"/>
+            <path fill="#34A853" d="M24 47c5.5 0 10.12-1.82 13.5-4.94l-7.08-5.5C28.57 38.1 26.4 39 24 39c-6.15 0-11.4-3.66-13.07-8.68l-8.38 6.4C6.07 43.52 14.5 47 24 47z"/>
+          </svg>
+          Continue with Google
+        </a>
         {!isSignup && (
           <div style={{ marginTop: '1rem', textAlign: 'center' }}>
             <Link to="/forgot-password" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>

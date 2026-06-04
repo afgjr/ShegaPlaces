@@ -15,6 +15,7 @@ const UpdatePlace = React.lazy(() => import('./places/pages/UpdatePlace'))
 const Auth = React.lazy(() => import('./users/pages/Auth'))
 const ForgotPassword = React.lazy(() => import('./users/pages/ForgotPassword'))
 const ResetPassword = React.lazy(() => import('./users/pages/ResetPassword'))
+const AuthSuccess = React.lazy(() => import('./users/pages/AuthSuccess'))
 const NotFound = React.lazy(() => import('./share/components/UiComponents/NotFound'))
 
 import './App.css'
@@ -44,6 +45,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/auth-success" element={<AuthSuccess />} />
         <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     )

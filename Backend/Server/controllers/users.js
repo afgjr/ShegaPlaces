@@ -255,3 +255,23 @@ export const resetPassword = async (req, res, next) => {
 
   res.status(200).json({ message: 'Password has been safely reset!' })
 }
+
+export const googleAuthCallback = async (req, res, next) => {
+  if (!req.user) {
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth?error=google-auth-failed`)
+  }
+
+  let token
+  try {
+    token = jwt.sign(
+      { userId: req.user.id, email: req.user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
+    )
+  } catch (err) {
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth?error=token-generation-failed`)
+  }
+
+  // Redirect to frontend with token so React can retrieve it and login
+  res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth-success?token=${token}&userId=${req.user.id}&email=${req.user.email}`)
+}

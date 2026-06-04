@@ -19,10 +19,13 @@ const __dirname = path.dirname(__filename)
 const PORT = process.env.PORT || 3000
 const app = express()
 
+import passport from './config/passport.js'
+
 // Security & utility middleware
 app.use(helmet({ crossOriginResourcePolicy: false }))
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(passport.initialize())
 
 // CORS
 app.use(cors({
