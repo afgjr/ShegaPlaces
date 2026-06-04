@@ -2,24 +2,37 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import nodemailer from 'nodemailer'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
 
-const getTransporter = () => {
-  if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
-    throw new Error('BREVO_SMTP_USER or BREVO_SMTP_PASS environment variables are not set.')
-  }
-  return nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.BREVO_SMTP_USER,
-      pass: process.env.BREVO_SMTP_PASS
-    }
+
+const sendResetEmail = async (toEmail, toName, resetLink) => {
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { email: process.env.BREVO_SENDER_EMAIL, name: 'ShegaPlaces Team' },
+      to: [{ email: toEmail, name: toName }],
+      subject: 'Password Reset Request',
+      htmlContent: `
+        <h2>Password Reset Request</h2>
+        <p>Hello ${toName}, you recently requested to reset your password for your ShegaPlaces account.</p>
+        <p>Click the link below to securely set a new password. This link will safely expire in 1 hour.</p>
+        <a href="${resetLink}" style="display:inline-block; padding:10px 20px; color:white; background-color:#4f46e5; border-radius:5px; text-decoration:none;">Reset Password</a>
+        <p>If you did not request a password reset, please ignore this email.</p>
+      `
+    })
   })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(`Brevo API Error: ${JSON.stringify(errorData)}`)
+  }
 }
 
 export const getUsers = async (req, res, next) => {
@@ -141,7 +154,6 @@ export const forgotPassword = async (req, res, next) => {
 
   console.log(`[forgotPassword] Request received for email: ${email}`)
 
-
   let user
   try {
     user = await User.findOne({ email })
@@ -171,23 +183,11 @@ export const forgotPassword = async (req, res, next) => {
 
   const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`
 
-  console.log(`[forgotPassword] Attempting to send email to ${user.email} via Brevo`)
+  console.log(`[forgotPassword] Attempting to send email to ${user.email} via Brevo API`)
 
   try {
-    const transporter = getTransporter()
-    const info = await transporter.sendMail({
-      from: `"ShegaPlaces Team" <${process.env.BREVO_SENDER_EMAIL}>`,
-      to: user.email,
-      subject: 'Password Reset Request',
-      html: `
-        <h2>Password Reset Request</h2>
-        <p>Hello ${user.name}, you recently requested to reset your password for your ShegaPlaces account.</p>
-        <p>Click the link below to securely set a new password. This link will safely expire in 1 hour.</p>
-        <a href="${resetLink}" style="display:inline-block; padding:10px 20px; color:white; background-color:#4f46e5; border-radius:5px; text-decoration:none;">Reset Password</a>
-        <p>If you did not request a password reset, please ignore this email.</p>
-      `
-    })
-    console.log(`[forgotPassword] Email sent successfully to ${user.email}: messageId=${info.messageId}`)
+    await sendResetEmail(user.email, user.name, resetLink)
+    console.log(`[forgotPassword] Email sent successfully to ${user.email}`)
   } catch (err) {
     console.error(`[forgotPassword] EMAIL SEND FAILED for ${user.email}:`, err.message)
 
@@ -197,6 +197,7 @@ export const forgotPassword = async (req, res, next) => {
     console.log(`[forgotPassword] Reset token cleared for ${email} due to email failure`)
     return next(new HttpError('There was an error sending the email. Try again later.', 500))
   }
+
   console.log(`[forgotPassword] Flow completed successfully for ${email}`)
   res.status(200).json({ message: 'A password reset link has been successfully dispatched to your email!' })
 }
