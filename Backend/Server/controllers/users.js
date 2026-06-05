@@ -2,11 +2,9 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import fetch from 'node-fetch'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
-
 
 const sendResetEmail = async (toEmail, toName, resetLink) => {
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
