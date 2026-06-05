@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import dns from 'dns'
-import { Resend } from 'resend'
+
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
