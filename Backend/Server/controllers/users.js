@@ -2,27 +2,37 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import * as SibApiV3Sdk from '@getbrevo/brevo'
+import fetch from 'node-fetch'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
 
-const sendResetEmail = async (toEmail, toName, resetLink) => {
-  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
-  apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY
 
-  await apiInstance.sendTransacEmail({
-    sender: { email: process.env.BREVO_SENDER_EMAIL, name: 'ShegaPlaces Team' },
-    to: [{ email: toEmail, name: toName }],
-    subject: 'Password Reset Request',
-    htmlContent: `
-      <h2>Password Reset Request</h2>
-      <p>Hello ${toName}, you recently requested to reset your password for your ShegaPlaces account.</p>
-      <p>Click the link below to securely set a new password. This link will safely expire in 1 hour.</p>
-      <a href="${resetLink}" style="display:inline-block; padding:10px 20px; color:white; background-color:#4f46e5; border-radius:5px; text-decoration:none;">Reset Password</a>
-      <p>If you did not request a password reset, please ignore this email.</p>
-    `
+const sendResetEmail = async (toEmail, toName, resetLink) => {
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': process.env.BREVO_API_KEY
+    },
+    body: JSON.stringify({
+      sender: { email: process.env.BREVO_SENDER_EMAIL, name: 'ShegaPlaces Team' },
+      to: [{ email: toEmail, name: toName }],
+      subject: 'Password Reset Request',
+      htmlContent: `
+        <h2>Password Reset Request</h2>
+        <p>Hello ${toName}, you recently requested to reset your password for your ShegaPlaces account.</p>
+        <p>Click the link below to securely set a new password. This link will safely expire in 1 hour.</p>
+        <a href="${resetLink}" style="display:inline-block; padding:10px 20px; color:white; background-color:#4f46e5; border-radius:5px; text-decoration:none;">Reset Password</a>
+        <p>If you did not request a password reset, please ignore this email.</p>
+      `
+    })
   })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(`Brevo API Error: ${JSON.stringify(error)}`)
+  }
 }
 
 export const getUsers = async (req, res, next) => {
