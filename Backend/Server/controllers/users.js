@@ -2,7 +2,7 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import SibApiV3Sdk from '@getbrevo/brevo'
+import * as SibApiV3Sdk from '@getbrevo/brevo'
 
 import { HttpError } from '../models/http-error.js'
 import { User } from '../models/user.js'
