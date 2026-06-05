@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import dns from 'dns'
+import nodemailer from 'nodemailer';
 
 
 import { HttpError } from '../models/http-error.js'
