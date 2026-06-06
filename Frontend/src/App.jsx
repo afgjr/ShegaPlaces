@@ -16,6 +16,7 @@ const Auth = React.lazy(() => import('./users/pages/Auth'))
 const ForgotPassword = React.lazy(() => import('./users/pages/ForgotPassword'))
 const ResetPassword = React.lazy(() => import('./users/pages/ResetPassword'))
 const AuthSuccess = React.lazy(() => import('./users/pages/AuthSuccess'))
+const PrivacyPolicy = React.lazy(() => import('./users/pages/PrivacyPolicy'))
 const NotFound = React.lazy(() => import('./share/components/UiComponents/NotFound'))
 
 import './App.css'
@@ -31,6 +32,7 @@ function App() {
         <Route path="/:uid/places" element={<UserPlaces />} />
         <Route path="/places/new" element={<NewPlace />} />
         <Route path="/places/:pid" element={<UpdatePlace />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/auth" element={<Navigate to="/" />} />
         <Route path="/forgot-password" element={<Navigate to="/" />} />
         <Route path="/reset-password/:token" element={<Navigate to="/" />} />
@@ -46,6 +48,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/auth-success" element={<AuthSuccess />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     )

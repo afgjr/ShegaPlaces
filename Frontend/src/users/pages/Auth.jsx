@@ -168,6 +168,10 @@ const Auth = () => {
           </svg>
           Continue with Google
         </a>
+        <p className="auth-privacy-notice">
+          By signing in, you agree to our{' '}
+          <Link to="/privacy">Privacy Policy</Link>
+        </p>
         {!isSignup && (
           <div style={{ marginTop: '1rem', textAlign: 'center' }}>
             <Link to="/forgot-password" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>
