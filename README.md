@@ -17,7 +17,7 @@
 *   **Interactive Maps** to view shared places using OpenStreetMap and React-Leaflet
 *   **Geocode converting** automatically translates addresses into map coordinates
 *   **Image Storage Cloud** using Cloudinary for fast and secure photo uploads
-*   **Password Reset Engine** using Resend API for temporary secure tokens [1]
+*   **Password Reset Engine** using Brevo API for temporary secure tokens [1]
 *   **JWT Authentication** for secure login, registration, and session management
 *   **Full CRUD controls** so you can create, edit, browse, and delete your favorite spots.
 
@@ -49,4 +49,4 @@ Navigate to the live deployment ([Shega Places](https://shega-places.vercel.app/
 
 ---
 ## Footnotes
-[1]: If you are self-hosting for local development, you'll need to supply your own Resend API key for password reset emails to fire successfully!
+[1]: If you are self-hosting for local development, you'll need to supply your own Brevo API key for password reset emails to fire successfully!
